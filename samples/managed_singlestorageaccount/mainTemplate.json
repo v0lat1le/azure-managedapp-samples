@@ -2,30 +2,40 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "storageAccountName": {
-            "type": "string"
+        "applianceDefinitionId": {
+          "type": "string",
+          "defaultValue": "/subscriptions/8715641f-79a1-4573-9915-132e0e163c29/resourceGroups/GregStuff/providers/Microsoft.Solutions/applianceDefinitions/helloManagedAppDef"
         },
-        "applianceDefinitionId" :{
-          "type": "string" 
+        "applianceName": {
+            "type": "string",
+            "defaultValue": "HelloManagedApp"
+        },
+        "companyName": {
+            "type": "string",
+            "defaultValue": "None"
+        },
+        "managedByResourceGroupName" : {
+            "type": "string",
+            "defaultValue": "[concat(parameters('applianceName'), '-', parameters('companyName'), '-managed-', uniqueString(resourceGroup().id, parameters('applianceName')))]"
+        },
+        "managedByResourceGroupId": {
+            "type": "string",
+            "defaultValue": "[concat(subscription().id, '/resourceGroups/', parameters('managedByResourceGroupName'))]"
         }
     },
     "variables": {
-        "managedByResourceGroupId": "[concat(resourceGroup().id,uniquestring(resourceGroup().id))]"
     },
     "resources": [
         {
             "type": "Microsoft.Solutions/appliances",
-            "name": "[parameters('storageAccountName')]",
+            "name": "[parameters('applianceName')]",
             "apiVersion": "2016-09-01-preview",
             "location": "[resourceGroup().location]",
             "kind": "ServiceCatalog",
             "properties": {
-                "managedResourceGroupId": "[variables('managedByResourceGroupId')]",
+                "managedResourceGroupId": "[parameters('managedByResourceGroupId')]",
                 "applianceDefinitionId": "[parameters('applianceDefinitionId')]",
                 "parameters": {
-                    "storageAccountName": {
-                        "value": "[parameters('storageAccountName')]"
-                    }
                 }
             }
         }
