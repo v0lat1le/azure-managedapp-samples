@@ -3,33 +3,21 @@
   "handler": "Microsoft.Compute.MultiVm",
   "version": "0.1.2-preview",
   "parameters": {
-    "basics": [
-      {
-        "name": "applianceName",
-        "type": "Microsoft.Common.TextBox",
-        "label": "Appliance Name",
-        "toolTip": "Appliance Name",
-        "constraints": {
-          "required": true,
-          "regex": "^[a-zA-Z0-9_.-]{1,80}$",
-          "validationMessage": "1-80 alphanumeric, underscore, hyphen, an period (except at end)"
-        }
-      }
-    ],
+    "basics": [],
     "steps": [
       {
         "name": "CustomerDets",
-        "label": "Sign Up Label",
+        "label": "Sign Up",
         "subLabel": {
           "preValidation": "Sign up for an Instaclustr Account",
           "postValidation": "Done"
         },
-        "bladeTitle": "Sign Up Blade",
+        "bladeTitle": "Sign Up",
         "elements": [
           {
             "name": "existing",
             "type": "Microsoft.Common.OptionsGroup",
-            "label": "Are you an existing customer?",
+            "label": "Are you an existing Customer?",
             "defaultValue": "New Customer",
             "constraints": {
               "allowedValues": [
@@ -47,7 +35,10 @@
           {
             "name": "username",
             "type": "Microsoft.Common.TextBox",
-            "label": "Username"
+            "label": "Username",
+            "constraints": {
+              "required": true
+            }
           },
           {
             "name": "password",
@@ -55,6 +46,9 @@
             "label": {
               "password": "Password",
               "confirmPassword": "Confirm password"
+            },
+            "constraints": {
+              "required": true
             },
             "options": {
               "hideConfirmation": "[steps('CustomerDets').existing]"
@@ -69,27 +63,49 @@
               "required": true,
               "regex": "^[a-zA-Z0-9]{1,80}$",
               "validationMessage": "1-80 alphanumeric"
-            }
-            // "visible": "[not(steps('CustomerDets').existing)]"
+            },
+            "visible": true
           },
           {
             "name": "fullName",
             "type": "Microsoft.Common.TextBox",
             "label": "Full Name",
+            "constraints": {
+              "required": "[not(steps('CustomerDets').existing)]"
+            },
             "visible": "[not(steps('CustomerDets').existing)]"
           },
           {
             "name": "email",
             "type": "Microsoft.Common.TextBox",
             "label": "E-mail Address",
+            "constraints": {
+              "required": "[not(steps('CustomerDets').existing)]"
+            },
             "visible": "[not(steps('CustomerDets').existing)]"
+          },
+          {
+            "name": "applianceName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Appliance Name",
+            "toolTip": "Appliance Name",
+            "constraints": {
+              "required": true,
+              "regex": "^[a-zA-Z0-9_.-]{1,80}$",
+              "validationMessage": "1-80 alphanumeric, underscore, hyphen, an period (except at end)"
+            }
           }
         ]
       }
     ],
     "outputs": {
-      "applianceName": "[basics('applianceName')]",
-      "companyName": "[basics('companyName')]"
+      "existingCustomer": "[steps('CustomerDets').existing]",
+      "username": "[steps('CustomerDets').username]",
+      "password": "[steps('CustomerDets').password]",
+      "companyName": "[steps('CustomerDets').companyName]",
+      "fullName": "[steps('CustomerDets').fullName]",
+      "email": "[steps('CustomerDets').email]",
+      "applianceName": "[steps('CustomerDets').applianceName]"
     }
   }
 }
