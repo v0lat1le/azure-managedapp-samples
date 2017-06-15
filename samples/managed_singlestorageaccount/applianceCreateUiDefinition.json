@@ -5,17 +5,6 @@
   "parameters": {
     "basics": [
       {
-        "name": "companyName",
-        "type": "Microsoft.Common.TextBox",
-        "label": "Company Name",
-        "toolTip": "Company Name",
-        "constraints": {
-          "required": true,
-          "regex": "^[a-zA-Z0-9]{1,80}$",
-          "validationMessage": "1-80 alphanumeric"
-        }
-      },
-      {
         "name": "applianceName",
         "type": "Microsoft.Common.TextBox",
         "label": "Appliance Name",
@@ -27,7 +16,77 @@
         }
       }
     ],
-    "steps": [ ],
+    "steps": [
+      {
+        "name": "CustomerDets",
+        "label": "Sign Up Label",
+        "subLabel": {
+          "preValidation": "Sign up for an Instaclustr Account",
+          "postValidation": "Done"
+        },
+        "bladeTitle": "Sign Up Blade",
+        "elements": [
+          {
+            "name": "existing",
+            "type": "Microsoft.Common.OptionsGroup",
+            "label": "Are you an existing customer?",
+            "defaultValue": "New Customer",
+            "constraints": {
+              "allowedValues": [
+                {
+                  "label": "Existing Customer",
+                  "value": true
+                },
+                {
+                  "label": "New Customer",
+                  "value": false
+                }
+              ]
+            }
+          },
+          {
+            "name": "username",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Username"
+          },
+          {
+            "name": "password",
+            "type": "Microsoft.Common.PasswordBox",
+            "label": {
+              "password": "Password",
+              "confirmPassword": "Confirm password"
+            },
+            "options": {
+              "hideConfirmation": "[steps('CustomerDets').existing]"
+            }
+          },
+          {
+            "name": "companyName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Company Name",
+            "toolTip": "Company Name",
+            "constraints": {
+              "required": true,
+              "regex": "^[a-zA-Z0-9]{1,80}$",
+              "validationMessage": "1-80 alphanumeric"
+            }
+            // "visible": "[not(steps('CustomerDets').existing)]"
+          },
+          {
+            "name": "fullName",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Full Name",
+            "visible": "[not(steps('CustomerDets').existing)]"
+          },
+          {
+            "name": "email",
+            "type": "Microsoft.Common.TextBox",
+            "label": "E-mail Address",
+            "visible": "[not(steps('CustomerDets').existing)]"
+          }
+        ]
+      }
+    ],
     "outputs": {
       "applianceName": "[basics('applianceName')]",
       "companyName": "[basics('companyName')]"
