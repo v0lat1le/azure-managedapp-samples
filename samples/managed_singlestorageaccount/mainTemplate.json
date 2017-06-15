@@ -2,21 +2,37 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "applianceDefinitionId": {
-          "type": "string",
-          "defaultValue": "/subscriptions/8715641f-79a1-4573-9915-132e0e163c29/resourceGroups/GregStuff/providers/Microsoft.Solutions/applianceDefinitions/helloManagedAppDef"
+        "existingCustomer": {
+            "type": "bool"
+        },
+        "username": {
+            "type": "string"
+        },
+        "password": {
+            "type": "securestring"
+        },
+        "companyName": {
+            "type": "string"
+        },
+        "fullName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "email": {
+            "type": "string",
+            "defaultValue": ""
         },
         "applianceName": {
             "type": "string",
             "defaultValue": "HelloManagedApp"
         },
-        "companyName": {
-            "type": "string",
-            "defaultValue": "None"
+        "applianceDefinitionId": {
+          "type": "string",
+          "defaultValue": "/subscriptions/8715641f-79a1-4573-9915-132e0e163c29/resourceGroups/GregStuff/providers/Microsoft.Solutions/applianceDefinitions/helloManagedAppDef"
         },
         "managedByResourceGroupName" : {
             "type": "string",
-            "defaultValue": "[concat(parameters('applianceName'), '-', parameters('companyName'), '-managed-', uniqueString(resourceGroup().id, parameters('applianceName')))]"
+            "defaultValue": "[concat('Managed-', parameters('companyName'), '-', parameters('applianceName'), '-', uniqueString(resourceGroup().id, parameters('applianceName')))]"
         },
         "managedByResourceGroupId": {
             "type": "string",
@@ -36,6 +52,24 @@
                 "managedResourceGroupId": "[parameters('managedByResourceGroupId')]",
                 "applianceDefinitionId": "[parameters('applianceDefinitionId')]",
                 "parameters": {
+                    "existingCustomer": {
+                       "value": "[parameters('existingCustomer')]"
+                    },
+                    "username": {
+                       "value": "[parameters('username')]"
+                    },
+                    "password": {
+                       "value": "[parameters('password')]"
+                    },
+                    "companyName": {
+                       "value": "[parameters('companyName')]"
+                    },
+                    "fullName": {
+                       "value": "[parameters('fullName')]"
+                    },
+                    "email": {
+                       "value": "[parameters('email')]"
+                    }
                 }
             }
         }

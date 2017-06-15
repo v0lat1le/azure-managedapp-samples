@@ -15,7 +15,7 @@
         "bladeTitle": "Sign Up",
         "elements": [
           {
-            "name": "existing",
+            "name": "existingCustomer",
             "type": "Microsoft.Common.OptionsGroup",
             "label": "Are you an existing Customer?",
             "defaultValue": "New Customer",
@@ -51,7 +51,7 @@
               "required": true
             },
             "options": {
-              "hideConfirmation": "[steps('CustomerDets').existing]"
+              "hideConfirmation": "[steps('CustomerDets').existingCustomer]"
             }
           },
           {
@@ -71,18 +71,18 @@
             "type": "Microsoft.Common.TextBox",
             "label": "Full Name",
             "constraints": {
-              "required": "[not(steps('CustomerDets').existing)]"
+              "required": "[not(steps('CustomerDets').existingCustomer)]"
             },
-            "visible": "[not(steps('CustomerDets').existing)]"
+            "visible": "[not(steps('CustomerDets').existingCustomer)]"
           },
           {
             "name": "email",
             "type": "Microsoft.Common.TextBox",
             "label": "E-mail Address",
             "constraints": {
-              "required": "[not(steps('CustomerDets').existing)]"
+              "required": "[not(steps('CustomerDets').existingCustomer)]"
             },
-            "visible": "[not(steps('CustomerDets').existing)]"
+            "visible": "[not(steps('CustomerDets').existingCustomer)]"
           },
           {
             "name": "applianceName",
@@ -99,7 +99,7 @@
       }
     ],
     "outputs": {
-      "existingCustomer": "[steps('CustomerDets').existing]",
+      "existingCustomer": "[steps('CustomerDets').existingCustomer]",
       "username": "[steps('CustomerDets').username]",
       "password": "[steps('CustomerDets').password]",
       "companyName": "[steps('CustomerDets').companyName]",

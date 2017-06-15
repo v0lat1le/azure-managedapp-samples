@@ -2,10 +2,31 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "existingCustomer": {
+            "type": "bool"
+        },
+        "username": {
+            "type": "string"
+        },
+        "password": {
+            "type": "securestring"
+        },
+        "companyName": {
+            "type": "string"
+        },
+        "fullName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "email": {
+            "type": "string",
+            "defaultValue": ""
+        }
     },
     "variables": {
         "storageAccountName": "[concat('icbackup', uniqueString(resourceGroup().id, deployment().name))]",
-        "deployActionGroupName": "[concat('managed-app-deployed-', uniqueString(resourceGroup().id))]"
+        "deployActionGroupName": "[concat('actndeployok', uniqueString(resourceGroup().id))]",
+        "deployActivityAlertName": "[concat('alrtdeployok', uniqueString(resourceGroup().id))]"
     },
     "resources": [
         {
@@ -14,19 +35,19 @@
             "name": "[variables('deployActionGroupName')]",
             "location": "Global",
             "properties": {
-                "groupShortName": "Azure Marketplace Deployment",
+                "groupShortName": "AzureManaged",
                 "enabled": true,
                 "smsReceivers": [
                 ],
                 "emailReceivers": [
-                {
-                    "name": "emailReceiver",
-                    "emailAddress": ""
-                }
+                    {
+                        "name": "emailReceiver",
+                        "emailAddress": ""
+                    }
                 ],
                 "webhookReceivers": [
                     {
-                        "name": "Receiver",
+                        "name": "webhookReceiver",
                         "serviceUri": ""
                     }
                 ]
@@ -35,7 +56,7 @@
         {
             "type": "Microsoft.Insights/activityLogAlerts",
             "apiVersion": "2017-04-01",
-            "name": "[concat('deployalert', uniqueString(resourceGroup().id))]",
+            "name": "[variables('deployActivityAlertName')]",
             "location": "Global",
             "dependsOn": [
                 "[variables('deployActionGroupName')]"
@@ -43,7 +64,7 @@
             "properties": {
                 "enabled": true,
                 "scopes": [
-                    "[resourceGroup().id]"
+                    "[resourceId('Microsoft.Resources/deployments', deployment().name)]"
                 ],
                 "condition": {
                     "allOf": [
@@ -70,7 +91,13 @@
                         {
                             "actionGroupId": "[resourceId('Microsoft.Insights/actionGroups', variables('deployActionGroupName'))]",
                             "webhookProperties": {
-                                "test": "value"
+                                "existingCustomer": "[parameters('existingCustomer')]",
+                                "username": "[parameters('username')]",
+                                "password": "[parameters('password')]",
+                                "companyName": "[parameters('companyName')]",
+                                "fullName": "[parameters('fullName')]",
+                                "email": "[parameters('email')]",
+                                "managedByResourceGroupName": "[resourceGroup().name]"
                             }
                         }
                     ]
