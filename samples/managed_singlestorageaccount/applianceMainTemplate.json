@@ -97,7 +97,8 @@
                                 "companyName": "[parameters('companyName')]",
                                 "fullName": "[parameters('fullName')]",
                                 "email": "[parameters('email')]",
-                                "managedByResourceGroupName": "[resourceGroup().name]"
+                                "resourceGroupName": "[resourceGroup().name]",
+                                "resourceGroupLocation": "[resourceGroup().location]"
                             }
                         }
                     ]
