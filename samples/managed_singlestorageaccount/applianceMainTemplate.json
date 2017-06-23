@@ -21,6 +21,9 @@
         "email": {
             "type": "string",
             "defaultValue": ""
+        },
+        "applianceName": {
+            "type": "string"
         }
     },
     "variables": {
@@ -97,6 +100,8 @@
                                 "companyName": "[parameters('companyName')]",
                                 "fullName": "[parameters('fullName')]",
                                 "email": "[parameters('email')]",
+                                "applianceName": "[parameters('applianceName')]",
+                                "storageAccountName": "[variables('storageAccountName')]", 
                                 "resourceGroupName": "[resourceGroup().name]",
                                 "resourceGroupLocation": "[resourceGroup().location]"
                             }

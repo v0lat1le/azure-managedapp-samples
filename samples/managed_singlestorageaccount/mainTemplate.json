@@ -23,8 +23,7 @@
             "defaultValue": ""
         },
         "applianceName": {
-            "type": "string",
-            "defaultValue": "HelloManagedApp"
+            "type": "string"
         },
         "applianceDefinitionId": {
           "type": "string",
@@ -69,6 +68,9 @@
                     },
                     "email": {
                        "value": "[parameters('email')]"
+                    },
+                    "applianceName": {
+                       "value": "[parameters('applianceName')]"
                     }
                 }
             }
