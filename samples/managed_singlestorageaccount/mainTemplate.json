@@ -2,25 +2,12 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "existingCustomer": {
-            "type": "bool"
-        },
-        "username": {
-            "type": "string"
-        },
-        "password": {
+        "token": {
             "type": "securestring"
         },
         "companyName": {
-            "type": "string"
-        },
-        "fullName": {
             "type": "string",
-            "defaultValue": ""
-        },
-        "email": {
-            "type": "string",
-            "defaultValue": ""
+            "defaultValue": "[base64ToJson(parameters('token')).company]"
         },
         "applianceName": {
             "type": "string"
@@ -51,23 +38,8 @@
                 "managedResourceGroupId": "[parameters('managedByResourceGroupId')]",
                 "applianceDefinitionId": "[parameters('applianceDefinitionId')]",
                 "parameters": {
-                    "existingCustomer": {
-                       "value": "[parameters('existingCustomer')]"
-                    },
-                    "username": {
-                       "value": "[parameters('username')]"
-                    },
-                    "password": {
-                       "value": "[parameters('password')]"
-                    },
-                    "companyName": {
-                       "value": "[parameters('companyName')]"
-                    },
-                    "fullName": {
-                       "value": "[parameters('fullName')]"
-                    },
-                    "email": {
-                       "value": "[parameters('email')]"
+                    "token": {
+                       "value": "[parameters('token')]"
                     },
                     "applianceName": {
                        "value": "[parameters('applianceName')]"

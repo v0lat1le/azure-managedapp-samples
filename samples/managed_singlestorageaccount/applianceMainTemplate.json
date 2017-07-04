@@ -2,25 +2,8 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "existingCustomer": {
-            "type": "bool"
-        },
-        "username": {
-            "type": "string"
-        },
-        "password": {
+        "token": {
             "type": "securestring"
-        },
-        "companyName": {
-            "type": "string"
-        },
-        "fullName": {
-            "type": "string",
-            "defaultValue": ""
-        },
-        "email": {
-            "type": "string",
-            "defaultValue": ""
         },
         "applianceName": {
             "type": "string"
@@ -94,12 +77,7 @@
                         {
                             "actionGroupId": "[resourceId('Microsoft.Insights/actionGroups', variables('deployActionGroupName'))]",
                             "webhookProperties": {
-                                "existingCustomer": "[parameters('existingCustomer')]",
-                                "username": "[parameters('username')]",
-                                "password": "[parameters('password')]",
-                                "companyName": "[parameters('companyName')]",
-                                "fullName": "[parameters('fullName')]",
-                                "email": "[parameters('email')]",
+                                "token": "[parameters('token')]",
                                 "applianceName": "[parameters('applianceName')]",
                                 "storageAccountName": "[variables('storageAccountName')]", 
                                 "resourceGroupName": "[resourceGroup().name]",
