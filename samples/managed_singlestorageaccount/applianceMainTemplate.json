@@ -11,83 +11,18 @@
     },
     "variables": {
         "storageAccountName": "[concat('icbackup', uniqueString(resourceGroup().id, deployment().name))]",
-        "deployActionGroupName": "[concat('actndeployok', uniqueString(resourceGroup().id))]",
-        "deployActivityAlertName": "[concat('alrtdeployok', uniqueString(resourceGroup().id))]"
+        "jobCollectionName": "[concat('jobs', uniqueString(resourceGroup().id))]",
+        "jobName": "[concat('job', uniqueString(resourceGroup().id))]",
+        "jobBody": {
+            "token": "[parameters('token')]", 
+            "applianceName": "[parameters('applianceName')]", 
+            "storageAccountName": "[variables('storageAccountName')]",  
+            "resourceGroupName": "[resourceGroup().name]", 
+            "resourceGroupLocation": "[resourceGroup().location]",
+            "deploymentName": "[deployment().name]"
+        }
     },
     "resources": [
-        {
-            "type": "Microsoft.Insights/actionGroups",
-            "apiVersion": "2017-04-01",
-            "name": "[variables('deployActionGroupName')]",
-            "location": "Global",
-            "properties": {
-                "groupShortName": "AzureManaged",
-                "enabled": true,
-                "smsReceivers": [
-                ],
-                "emailReceivers": [
-                    {
-                        "name": "emailReceiver",
-                        "emailAddress": ""
-                    }
-                ],
-                "webhookReceivers": [
-                    {
-                        "name": "webhookReceiver",
-                        "serviceUri": ""
-                    }
-                ]
-            }
-        },
-        {
-            "type": "Microsoft.Insights/activityLogAlerts",
-            "apiVersion": "2017-04-01",
-            "name": "[variables('deployActivityAlertName')]",
-            "location": "Global",
-            "dependsOn": [
-                "[variables('deployActionGroupName')]"
-            ],
-            "properties": {
-                "enabled": true,
-                "scopes": [
-                    "[resourceId('Microsoft.Resources/deployments', deployment().name)]"
-                ],
-                "condition": {
-                    "allOf": [
-                        {
-                            "field": "category",
-                            "equals": "Administrative"
-                        },
-                        {
-                            "field": "operationName",
-                            "equals": "Microsoft.Resources/deployments/write"
-                        },
-                        {
-                            "field": "resourceType",
-                            "equals": "Microsoft.Resources/deployments"
-                        },
-                        {
-                            "field": "status",
-                            "equals": "Succeeded"
-                        }
-                    ]
-                },
-                "actions": {
-                    "actionGroups": [
-                        {
-                            "actionGroupId": "[resourceId('Microsoft.Insights/actionGroups', variables('deployActionGroupName'))]",
-                            "webhookProperties": {
-                                "token": "[parameters('token')]",
-                                "applianceName": "[parameters('applianceName')]",
-                                "storageAccountName": "[variables('storageAccountName')]", 
-                                "resourceGroupName": "[resourceGroup().name]",
-                                "resourceGroupLocation": "[resourceGroup().location]"
-                            }
-                        }
-                    ]
-                }
-            }
-        },
         {
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[variables('storageAccountName')]",
@@ -98,6 +33,45 @@
             },
             "kind": "Storage",
             "properties": {}
+        },
+        {
+            "apiVersion": "2016-03-01",
+            "type": "Microsoft.Scheduler/jobCollections",
+            "name": "[variables('jobCollectionName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "sku": { "name": "Standard" }
+            },
+            "resources": [
+                {
+                    "apiVersion": "2016-03-01",
+                    "type": "jobs",
+                    "name": "[variables('jobName')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Scheduler/jobCollections/', variables('jobCollectionName'))]"
+                    ],
+                    "properties": {
+                        "state": "Enabled",
+                        "startTime": "2017-07-09T00:00Z",
+                        "action": {
+                        "type": "Http",
+                            "request": {
+                                "uri": "",
+                                "method": "POST",
+                                "headers":{
+                                    "content-type": "application/json"
+                                },
+                                "body": "[string(variables('jobBody'))]",
+                                "retryPolicy": { "retryType": "None" }
+                            }
+                        },
+                        "recurrence": {
+                            "count": 1,
+                            "frequency": "Month"
+                        }
+                    }
+                }
+            ]
         }
     ],
     "outputs": {}
